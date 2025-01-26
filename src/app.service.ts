@@ -6,12 +6,10 @@ export class AppService {
   constructor(@Inject('ILogger') private readonly logger: ILogger) {}
 
   getHello(): string {
-    const methodName = this.getHello.name;
-
     this.logger.log({
       message: 'Hello World!',
       context: AppService.name,
-      method: methodName,
+      method: this.getHello.name,
     });
 
     return 'Hello World!';
