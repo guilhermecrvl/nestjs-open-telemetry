@@ -5,10 +5,14 @@ import { AppService } from './app.service';
 describe('AppController', () => {
   let appController: AppController;
 
+  const mockLogger = {
+    log: jest.fn(),
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [AppService, { provide: 'ILogger', useValue: mockLogger }],
     }).compile();
 
     appController = app.get<AppController>(AppController);
@@ -16,7 +20,13 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+      const result = appController.getHello();
+      expect(result).toBe('Hello World!');
+      expect(mockLogger.log).toHaveBeenCalledWith({
+        message: 'Hello World!',
+        context: AppController.name,
+        method: appController.getHello.name,
+      });
     });
   });
 });
